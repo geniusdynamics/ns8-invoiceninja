@@ -9,6 +9,7 @@ import json
 import sys
 import agent
 import os
+import base64
 
 # Try to parse the stdin as JSON.
 # If parsing fails, output everything to stderr
@@ -21,6 +22,15 @@ def generate_random_password(length):
     random_bytes = os.urandom(length)
     password = random_bytes.hex()
     return password[:length]
+
+def generate_laravel_app_key():
+    # Generate 32 random bytes
+    random_bytes = os.urandom(32)
+    # Encode the random bytes in base64
+    app_key = base64.b64encode(random_bytes).decode('utf-8')
+    # Prefix with 'base64:'
+    laravel_key = f'base64:{app_key}'
+    return laravel_key
 
 MARIADB_ROOT_PASSWORD= generate_random_password(16)
 MARIADB_DATABASE="invoiceninja"
@@ -36,12 +46,14 @@ mariadb_config = {
 
 agent.write_envfile("database.env", mariadb_config)
 
+APP_KEY = generate_laravel_app_key()
 invoice_config = {
     "DB_HOST": "mariadb-app",
     "DB_PORT": 3306,
     "DB_DATABASE": MARIADB_DATABASE,
     "DB_USERNAME": MARIADB_USER,
-    "DB_PASSWORD": MARIADB_ROOT_PASSWORD
+    "DB_PASSWORD": MARIADB_ROOT_PASSWORD,
+    "APP_KEY": APP_KEY,
 }
 agent.write_envfile("invoice-db.env", invoice_config)
 
