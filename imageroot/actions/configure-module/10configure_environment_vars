@@ -14,20 +14,54 @@ import agent
 data = json.load(sys.stdin)
 
 #This is specific to you module, so you need to change it accordingly.
-# we read a json stdin {"vars1":true, "var2":"foo", "vars3": 3} and we writ it to .config/state/environment
-# Upper case to set environment variable and minor case to read from stdin
+rdb = agent.redis_connect(use_replica=True)
+smtp_settings = agent.get_smarthost_settings(rdb)
 
-# this values must exists in the json stdin
-# agent.set_env("MAIL_SERVER", data["mail_server"])
-# agent.set_env("LDAP_DOMAIN", data["ldap_domain"])
+host = data.get('host')
 
-# you can add default values for the following variables
-# agent.set_env("MAIL_DOMAIN",data.get("mail_domain",""))
-# agent.set_env("WOWORKERSCOUNT",data.get("workers_count",3))
-# agent.set_env("AUXILIARYACCOUNT",data.get("auxiliary_account",True))
-# agent.set_env("ACTIVESYNC",data.get("activesync",False))
+APP_URL = f"https://{host}"
+APP_DEBUG = data.get("APP_DEBUG", "false")
+REQUIRE_HTTPS = data.get("REQUIRE_HTTPS", "true")
+PHANTOMJS_PDF_GENERATION = data.get("PHANTOMJS_PDF_GENERATION", "false")
+PDF_GENERATOR = data.get("PDF_GENERATOR", "snappdf")
+TRUSTED_PROXIES = data.get("TRUSTED_PROXIES", "*")
+IN_USER_EMAIL= data.get("IN_USER_EMAIL", "admin@gmail.com")
+IN_PASSWORD = data.get("IN_PASSWORD", "admin")
+# MAIL_MAILER=log
+# MAIL_HOST=smtp.mailtrap.io
+# MAIL_PORT=2525
+# MAIL_USERNAME=null
+# MAIL_PASSWORD=null
+# MAIL_ENCRYPTION=null
+# MAIL_FROM_ADDRESS='user@example.com'
+# MAIL_FROM_NAME='Self Hosted User'
+# Mail
+SMTP_HOST = smtp_settings['host']
+SMTP_PORT = smtp_settings['port']
+SMTP_USERNAME = smtp_settings['username']
+SMTP_PASSWORD = smtp_settings['password']
+SMTP_ENCRYPTION = smtp_settings['encrypt_smtp']
+SMTP_TLSVERIFY = smtp_settings['tls_verify']
 
+invoice_config = {
+    "APP_URL": APP_URL,
+    "APP_DEBUG": APP_DEBUG,
+    "REQUIRE_HTTPS": REQUIRE_HTTPS,
+    "PHANTOMJS_PDF_GENERATION": PHANTOMJS_PDF_GENERATION,
+    "PDF_GENERATOR": PDF_GENERATOR,
+    "TRUSTED_PROXIES": TRUSTED_PROXIES,
+    "IN_USER_EMAIL": IN_USER_EMAIL,
+    "IN_PASSWORD": IN_PASSWORD,
+    "MAIL_MAILER": "log",
+    "MAIL_HOST": SMTP_HOST,
+    "MAIL_PORT": SMTP_PORT,
+    "MAIL_USERNAME": SMTP_USERNAME,
+    "MAIL_PASSWORD": SMTP_PASSWORD,
+    "MAIL_ENCRYPTION": SMTP_ENCRYPTION,
+    "MAIL_FROM_ADDRESS": SMTP_USERNAME,
+    "MAIL_FROM_NAME": SMTP_USERNAME,
+}
 
-# Make sure everything is saved inside the environment file
-# just before starting systemd unit
+agent.write_envfile("invoice.env", invoice_config)
+
 #agent.dump_env()
