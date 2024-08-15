@@ -21,11 +21,6 @@ ExecStartPre=-runagent discover-smarthost
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/invoiceninja-app.pid \
     --cidfile %t/invoiceninja-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/invoiceninja.pod-id --replace -d --name  invoiceninja-app \
-    --volume invoiceninja-hosts:/etc/hosts/:Z \
-    --volume invoiceninja-public:/var/www/app/public/:Z \
-    --volume invoiceninja-php-ini:/usr/local/etc/php/php.ini:Z \
-    --volume invoiceninja-storage:/var/www/app/storage/:Z \
-    --volume invoiceninja-php-cli:/usr/local/etc/php/php-cli.ini:Z \
     --env-file=%S/state/invoice-db.env \
     --env-file=%S/state/invoice.env \
     ${INVOICENINJA_IMAGE}
