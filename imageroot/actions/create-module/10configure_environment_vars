@@ -36,6 +36,14 @@ mariadb_config = {
 
 agent.write_envfile("database.env", mariadb_config)
 
+invoice_config = {
+    "DB_HOST": "mariadb-app",
+    "DB_PORT": 3306,
+    "DB_DATABASE": MARIADB_DATABASE,
+    "DB_USERNAME": MARIADB_USER,
+    "DB_PASSWORD": MARIADB_ROOT_PASSWORD
+}
+agent.write_envfile("invoice-db.env", invoice_config)
 
 # just before starting systemd unit
 #agent.dump_env()
