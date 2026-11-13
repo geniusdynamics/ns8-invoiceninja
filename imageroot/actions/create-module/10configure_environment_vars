@@ -52,7 +52,7 @@ invoice_config = {
     "DB_PORT": 3306,
     "DB_DATABASE": MARIADB_DATABASE,
     "DB_USERNAME": MARIADB_USER,
-    "DB_PASSWORD": MARIADB_ROOT_PASSWORD,
+    "DB_PASSWORD": MARIADB_PASSWORD,
     "APP_KEY": APP_KEY,
 }
 agent.write_envfile("invoice-db.env", invoice_config)

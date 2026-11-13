@@ -10,8 +10,8 @@
 
 [Unit]
 Description=Podman invoiceninja.service
-Requires=mariadb-app.service invoiceninja-app.service
-Before=mariadb-app.service invoiceninja-app.service
+Requires=mariadb-app.service invoiceninja-app.service nginx-app.service
+Before=mariadb-app.service invoiceninja-app.service nginx-app.service
 
 [Service]
 Environment=PODMAN_SYSTEMD_UNIT=%n

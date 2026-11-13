@@ -15,6 +15,7 @@ data = json.load(sys.stdin)
 
 #This is specific to you module, so you need to change it accordingly.
 rdb = agent.redis_connect(use_replica=True)
+smtp_settings = agent.get_smarthost_settings(rdb)
 
 host = data.get('host')
 
