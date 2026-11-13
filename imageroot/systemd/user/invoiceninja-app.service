@@ -19,6 +19,8 @@ ExecStartPre=/bin/rm -f %t/invoiceninja-app.pid %t/invoiceninja-app.ctr-id
 ExecStart=/usr/bin/podman run --conmon-pidfile %t/invoiceninja-app.pid \
     --cidfile %t/invoiceninja-app.ctr-id --cgroups=no-conmon \
     --pod-id-file %t/invoiceninja.pod-id --replace -d --name  invoiceninja-app \
+    --volume invoiceninja-public:/var/www/app/public:z \
+    --volume invoiceninja-storage:/var/www/app/storage:Z \
     --env-file=%E/state/invoice-db.env \
     --env-file=%E/state/invoice.env \
     ${INVOICENINJA_IMAGE}
